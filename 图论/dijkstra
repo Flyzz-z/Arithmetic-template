@@ -1,0 +1,67 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+const int maxn=1e5;
+const int inf=1e9;
+struct edge
+{
+    int u,v,w;
+    edge(int u,int v,int w):u(u),v(v),w(w){}
+};
+struct node
+{
+    int u,d;
+    node(int u,int d):u(u),d(d){}
+    bool operator <(const node& rhs) const{
+        return d>rhs.d;
+    }
+};
+
+vector<edge> edges;
+vector<int> mp[maxn];
+int n,m,d[maxn],vis[maxn];
+void add_edge(int u,int v,int d)
+{
+    edges.push_back(edge(u,v,d));
+    mp[u].push_back(edges.size()-1);
+}
+ 
+priority_queue<node> op;
+void dijkstra(int s)
+{
+    for(int i=1;i<=n;i++) d[i]=inf;
+    d[s]=0;
+    op.push(node(s,d[s]));
+    while(!op.empty())
+    {
+        node tmp=op.top();op.pop();
+        if(vis[tmp.u]) continue;
+        vis[tmp.u]=1;
+        for(int i=0;i<mp[tmp.u].size();i++)
+        {
+            edge e=edges[mp[tmp.u][i]];
+            if(d[tmp.u]+e.w<d[e.v])
+            {
+                d[e.v]=d[tmp.u]+e.w;
+                op.push(node(e.v,d[e.v]));
+            }
+        }
+    }
+
+}
+int main()
+{
+
+
+
+    return 0;
+}
