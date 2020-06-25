@@ -1,0 +1,98 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+#include<unordered_map>
+using namespace std;
+typedef long long ll;
+const int maxn=1e5+7;
+ll quickpow(ll x,ll y,ll p)
+{
+    ll ans=1;
+    while(y)
+    {
+        if(y&1)
+        {
+            ans=ans*x%p;
+        }
+        x=x*x%p;
+        y>>=1;
+    }
+    return ans;
+}
+ll gcd(ll x,ll y)
+{
+    return y?gcd(y,x%y):x;
+}
+void exgcd(ll a,ll b,ll &d,ll &x,ll &y)
+{
+    if(!b)
+    {
+        d=a,x=1,y=0;
+    }
+    else
+    {
+        exgcd(b,a%b,d,y,x);
+        y-=x*(a/b);
+    }
+}
+unordered_map<ll,int> op;
+ll exBSGS(ll a,ll b,ll p)
+{
+    op.clear();
+    if(1%p==b) return 0;
+    ll na=1,nb=b,np=p;
+    int c=0;
+    while(gcd(a,np)!=1)
+    {
+        ll g=gcd(na,np);
+        if(nb%g!=0) return -1;
+        nb=nb/g,np=np/g,na=na*(a/g)%np;
+        c++;
+        if(na==nb) return c;
+    }
+    ll x,y,d;
+    exgcd(na,np,d,x,y);
+    nb=nb*((x+np)%np)%np;
+    int m=sqrt(np+0.5);
+    op[1]=0;ll e=1;
+    ll v,u=quickpow(a,m,np);
+    exgcd(u,np,d,x,y);
+    if(d!=1) return -1;
+    v=(x+np)%np;
+    for(int i=1;i<m;i++)
+    {
+        e=e*a%np;
+        if(!op.count(e)) op[e]=i;
+    }
+    for(int i=0;i<m;i++)
+    {                                           
+        if(op.count(nb))
+        {
+            return i*m+op[nb]+c;
+        }
+        nb=nb*v%np;
+    }
+    return -1;
+}
+int main()
+{
+    //freopen("tte.txt","r",stdin);
+    //freopen("out.txt","w",stdout);
+    ll a,p,b;
+    while(scanf("%lld%lld%lld",&a,&p,&b)==3&&a+p+b)
+    {
+        if(!(a+b+p)) break;
+        ll ans=exBSGS(a,b,p);
+        if(ans==-1) printf("No Solution\n");
+        else printf("%d\n",ans);
+    }
+    return 0;
+}
