@@ -1,0 +1,105 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+using namespace std;
+typedef long long ll; 
+const int maxn=5e5+5;
+const int mod=998244353;
+inline int read() {
+    int x = 0, f = 1; char ch = getchar();
+    while(ch < '0' || ch > '9') {if(ch == '-') f = -1; ch = getchar();}
+    while(ch >= '0' && ch <= '9') {x = x * 10 + ch - '0'; ch = getchar();}
+    return x * f;
+}
+int n,m,s;
+int head[maxn],depth[maxn],cnt=0,fa[maxn][60];
+struct edge
+{
+    int to,next;
+    edge(int to=0,int ne=0):to(to),next(ne){}
+}edges[2*maxn];
+void add_edge(int u,int v)
+{
+    edges[++cnt]=edge(v,head[u]);
+    head[u]=cnt;
+}
+void dfs(int s,int f,int d)
+{
+    depth[s]=d;
+    fa[s][0]=f;
+    for(int i=head[s];i!=-1;i=edges[i].next)
+    {
+        edge tmp=edges[i];
+        if(tmp.to!=f)
+        {
+            dfs(tmp.to,s,d+1);
+        }
+    }
+}
+int solve(int u,int v)
+{
+    
+    if(depth[u]<depth[v])
+    {
+        int la=depth[v]-depth[u];
+        for(int i=0;i<20;i++)
+        {
+            if((1<<i)&la)
+            v=fa[v][i];
+        }
+    }
+    else 
+    {
+        int la=depth[u]-depth[v];
+        for(int i=0;i<20;i++)
+        {
+            if((1<<i)&la)
+            u=fa[u][i];
+        }
+    }
+    if(u==v) return u;
+    for(int i=20;i>=0;i--)
+    {
+        if(fa[u][i]!=fa[v][i])
+        {
+            u=fa[u][i];
+            v=fa[v][i];
+        }
+    }
+    int t=depth[u]>depth[v]?u:v;
+    return fa[t][0];
+}
+int main()
+{
+    //freopen("tte.txt","r",stdin);
+    scanf("%d%d%d",&n,&m,&s);
+    int u,v;
+    memset(head,-1,sizeof(head));
+    for(int i=1;i<=n-1;i++)
+    {
+        u=read();v=read();
+        add_edge(u,v);
+        add_edge(v,u);
+    }
+    dfs(s,0,0);
+    for(int i=1;i<20;i++)
+    {
+       for(int j=1;j<=n;j++)
+       {
+           fa[j][i]=fa[fa[j][i-1]][i-1];
+       }
+    }
+    for(int i=1;i<=m;i++)
+    {
+        u=read();v=read();
+        printf("%d\n",solve(u,v));
+    }
+    return 0;
+}                                  
