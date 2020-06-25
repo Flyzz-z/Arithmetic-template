@@ -1,0 +1,23 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+typedef long long ll;
+const int maxn=3e6+5;
+ll inv[maxn],n,p;
+void get()
+{
+  inv[0]=inv[1]=1;
+  for(int i=2;i<=n;i++)
+  {
+    inv[i]=((-p/i)*inv[p%i]%p+p)%p;
+  }
+}
