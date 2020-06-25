@@ -1,0 +1,27 @@
+int f[maxn];
+void getfail(char* p,int *f)
+{
+    int len=strlen(P+1);
+    f[1]=1,f[2]=1;
+    for(int i=2;i<=len;i++)
+    {
+        int j=f[i];
+        while(j!=1&&p[i]!=p[j]) j=f[j];
+        f[i+1]=p[j]==p[i]?j+1:1;
+    }
+}
+void find(char* T,char* P,int *f)
+{
+    int len1=strlen(T+1),len2=strlen(P+1);
+    getfail(P,f);
+    int j=1;
+    for(int i=1;i<=len1;i++)
+    {
+        while(j&&P[j]!=T[i]) j=f[j];
+        if(P[j]==T[i]) j++;
+        if(j==len2) {
+            printf("%d\n",i-len2+1);
+            return;
+        }
+    }
+}
