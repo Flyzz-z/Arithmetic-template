@@ -1,0 +1,112 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+const int maxn=1e5+5;
+const int sigma_size=26;
+int ch[maxn][sigma_size],val[maxn],sz;
+int idx(char c)
+{
+    return c-'a';
+}
+
+void init()
+{
+    sz=1;
+    memset(ch[0],0,sizeof(ch[0]));
+    memset(val,0,sizeof(val));
+}
+
+void insert(char *s,int v)
+{
+    int u=0,len=strlen(s);
+    for(int i=0;i<len;i++)
+    {
+        int c=idx(s[i]);
+        if(!ch[u][c])
+        {
+            memset(ch[sz],0,sizeof(ch[sz]));
+            val[sz]=0;
+            ch[u][c]=sz++;
+        }
+        u=ch[u][c];
+    }
+    val[u]=v;//单词末尾节点设特殊值,也可统计次数等
+}
+
+int query(char* s)
+{
+    int u=0,len=strlen(s+1);
+    for(int i=1;i<=len;i++)
+    {
+        int c=idx(s[i]);
+        if(!ch[u][c]) return 0;
+        else u=ch[u][c];
+    }
+    return val[u];
+}
+int f[maxn],last[maxn];//后缀链接
+queue<int> q;
+int getfail()
+{
+    f[0]=0;
+    for(int c=0;c<sigma_size;c++)
+    {
+        int u=ch[0][c];
+        if(u)
+        {
+            f[u]=0;
+            q.push(u);
+            last[u]=0;
+        }
+    }
+
+    while(!q.empty())
+    {
+        int r=q.front();q.pop();
+        for(int c=0;c<sigma_size;c++)
+        {
+            int u=ch[r][c];
+            if(!u)
+            {
+                ch[r][c]=ch[f[r]][c];
+                continue;
+            }
+            q.push(u);
+            int v=f[r];
+            while(v&&!ch[v][c]) v=f[v];
+            f[u]=ch[v][c];
+            last[u]=val[f[u]]?f[u]:last[f[u]];
+        }
+
+    }
+}
+
+void find(char *T)//在T中找模板
+{ 
+    int len=strlen(T+1);
+    int  j=0;
+    for(int i=1;i<=len;i++)
+    {
+        int c=idx(T[i]);
+        j=ch[j][c];
+        if(val[j]) 
+        {
+
+        }
+        else if(last[j])
+        {
+
+        }
+    }
+
+
+}
