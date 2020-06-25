@@ -1,0 +1,72 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+typedef long long ll;
+const int maxn=100000+5;
+const ll inf=1e10;
+ll c[maxn],m[maxn];
+ll gcd(ll a,ll b)
+{
+    if(a<b) swap(a,b);
+    return b==0?a:gcd(b,a%b);
+}
+ll qmul(ll x,ll y,ll p)
+{
+	ll ans=0;
+	while(y)
+    {
+		if(y&1) ans=(ans+x)%p;
+		x=(x<<1)%p; y>>=1;
+	}
+    return ans;
+}
+void exgcd(ll a,ll b,ll &d,ll &x,ll &y)
+{
+    if(!b)
+    {
+        d=a,x=1,y=0;
+    }
+    else
+    {
+        exgcd(b,a%b,d,y,x);y-=x*(a/b);
+    } 
+}
+
+ll exchina(int n)
+{
+    ll x,y,d;
+    ll M=m[1],ans=(c[1]%m[1]+m[1])%m[1];
+    for(int i=2;i<=n;i++)
+    {
+        exgcd(M,m[i],d,x,y);
+        ll b=((c[i]-ans%m[i])%m[i]+m[i])%m[i];
+        /*前k-1个通解x=x'+t*M,加入第k个方程，要满足x'+t*M≡c[k](mod m[k])
+        相当于解该方程：M*t+m[i]*y=c[k]-x'(可调整为模m[i]意义下的正数)。*/
+        if(b%d!=0) return -1;
+        x=qmul(x,b/d,m[i]);
+        ans+=x*M;
+        M*=m[i]/d;
+        ans=(ans%M+M)%M;
+    }
+    return ans;
+}
+int main()
+{
+    int n;scanf("%d",&n);
+    for(int i=1;i<=n;i++)
+    {
+        scanf("%lld%lld",&m[i],&c[i]);
+    }
+    ll ans=exchina(n);
+    printf("%lld\n",ans);
+    return 0;
+}
