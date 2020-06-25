@@ -1,0 +1,40 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+#include<bitset>
+using namespace std;
+typedef long long ll;
+const int maxn=1e6+5;
+int n,m;
+char s[maxn],ss[2*maxn];
+int p[2*maxn];
+void manacher()
+{
+    ss[0]='%'; int c=1;
+    for(int i=1;i<=n;i++)
+    {
+        ss[c++]='#';
+        ss[c++]=s[i];
+    }
+    ss[c++]='#';ss[c]='\0';
+    int id=1,r=1;
+    for(int i=1;i<c;i++)
+    {
+        p[i]=i<r?min(p[2*id-i],r-i):1;
+        while(ss[i-p[i]]==ss[i+p[i]]) p[i]++;
+        if(i+p[i]>r)
+        {
+            r=i+p[i];
+            id=i;
+        }
+    }
+   
+}
