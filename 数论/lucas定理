@@ -1,0 +1,45 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+typedef long long ll;
+const int maxn=2000+5;
+const int inf=1e9;
+ll quickpow(ll x,ll y,ll p)
+{
+    ll ans=1;
+    while(y)
+    {
+        if(y&1)
+        {
+            ans=ans*x%p;
+        }
+        x=x*x%p;
+        y>>=1;
+    }
+    return ans;
+}
+int n,m,p;
+ll kx[maxn];//保存阶乘，若多组询问可用一个ky[]数组保存逆
+ll C(ll n,ll m,ll p)
+{
+    if(m>n) return 0;
+    else return kx[n]*quickpow(kx[m],p-2,p)%p*quickpow(kx[n-m],p-2,p);
+}
+ll lucas(int n,int m,int p)
+{
+    if(m==0) return 1;
+    else
+    {
+        ll ans=lucas(n/p,m/p,p)*C(n%p,m%p,p);
+        return ans;
+    }
+}   
