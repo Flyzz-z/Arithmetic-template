@@ -1,0 +1,55 @@
+//please ac
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+#include<set>
+#include<queue>
+#include<cstring>
+#include<string>
+#include<cmath>
+#include<vector>
+#include<stack>
+#include<map>
+using namespace std;
+const int maxn=1e5+5;
+const int sigma_size=26;
+int ch[maxn][sigma_size],val[maxn],sz;
+int idx(char c)
+{
+    return c-'a';
+}
+
+void init()
+{
+    sz=1;
+    memset(ch[0],0,sizeof(ch[0]));
+}
+
+void insert(char *s,int v)
+{
+    int u=0,len=strlen(s+1);
+    for(int i=1;i<=len;i++)
+    {
+        int c=idx(s[i]);
+        if(!ch[u][c])
+        {
+            memset(ch[sz],0,sizeof(ch[sz]));
+            val[sz]=0;
+            ch[u][c]=sz++;
+        }
+        u=ch[u][c];
+    }
+    val[u]=v;//单词末尾节点设特殊值,也可统计次数等
+}
+
+int query(char* s)
+{
+    int u=0,len=strlen(s+1);
+    for(int i=1;i<=len;i++)
+    {
+        int c=idx(s[i]);
+        if(!ch[u][c]) return 0;
+        else u=ch[u][c];
+    }
+    return val[u];
+}
