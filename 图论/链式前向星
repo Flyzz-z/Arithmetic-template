@@ -1,0 +1,13 @@
+struct edge
+{
+    int to,next;
+    edge(int to=0,int ne=0):to(to),next(ne){}
+};
+edge edges[2*maxn];
+int cnt=0;
+int head[maxn];
+void add_edge(int u,int v)
+{
+    edges[++cnt]=edge(v,head[u]);
+    head[u]=cnt;
+}
