@@ -1,0 +1,107 @@
+/*对应题目 luogu p3369*/
+#include<bits/stdc++.h>
+using namespace std;
+const int maxn=2e7+5;
+const int el=1e7;
+int tree[4*maxn];
+void insert(int o,int l,int r,int v,int f)
+{
+    if(l==r)
+    {
+        tree[o]+=f;
+        return;
+    }
+    int lc=2*o,rc=2*o+1,mid=l+(r-l)/2;
+    if(v<=mid) insert(lc,l,mid,v,f);
+    else insert(rc,mid+1,r,v,f);
+    tree[o]=tree[lc]+tree[rc];
+}
+int queryrank(int o,int l,int r,int v)//查找v值的排名
+{
+    if(l==r) return 1;
+    int lc=2*o,rc=2*o+1,mid=l+(r-l)/2;
+    if(v<=mid) return queryrank(lc,l,mid,v);
+    else return tree[lc]+queryrank(rc,mid+1,r,v);
+}
+int queryx(int o,int l,int r,int v)//查找排名为v的数
+{
+    if(l==r) return l;
+    int lc=2*o,rc=2*o+1,mid=l+(r-l)/2;
+    //printf("%d %d %d %d %d\n",l,r,tree[lc],tree[rc],v);
+    if(tree[lc]>=v) return queryx(lc,l,mid,v);
+    else return queryx(rc,mid+1,r,v-tree[lc]);
+}
+int queryprex(int o,int l,int r,int v)//查找前驱
+{
+    if(l==r)
+    {
+        if(tree[o]) return l;
+        return -1;
+    }
+    int lc=2*o,rc=2*o+1,mid=l+(r-l)/2;
+    if(v<=mid) return queryprex(lc,l,mid,v);
+    else
+    {
+        int ans=-1;
+        if(tree[rc])
+        ans=queryprex(rc,mid+1,r,v);
+        if(ans==-1&&tree[lc])
+        ans=queryprex(lc,l,mid,v);
+        return ans;
+    }
+}
+
+int querysufx(int o,int l,int r,int v)//查找后继
+{
+   if(l==r)
+    {
+        if(tree[o]) return l;
+        return -1;
+    }
+    int lc=2*o,rc=2*o+1,mid=l+(r-l)/2;
+    if(v>mid) return querysufx(rc,mid+1,r,v);
+    else
+    {
+        int ans=-1;
+        if(tree[lc])
+        ans=querysufx(lc,l,mid,v);
+        if(ans==-1&&tree[rc])
+        ans=querysufx(rc,mid+1,r,v);
+        return ans;
+    }
+}
+int main()
+{
+    freopen("in.txt","r",stdin);
+    int n;scanf("%d",&n);
+    while(n--)
+    {
+        int op,x;scanf("%d %d",&op,&x);
+        if(op==1)
+        {
+            insert(1,0,2e7,x+el,1);
+        }
+        else if(op==2)
+        {
+            insert(1,0,2e7,x+el,-1);
+        }
+        else if(op==3)
+        {
+            printf("%d\n",queryrank(1,0,2e7,x+el));
+
+        }
+        else if(op==4)
+        {
+            printf("%d\n",queryx(1,0,2e7,x)-el);
+        }
+        else if(op==5)
+        {
+            printf("%d\n",queryprex(1,0,2e7,x+el-1)-el);
+        }
+        else if(op==6)
+        {
+            printf("%d\n",querysufx(1,0,2e7,x+el+1)-el);
+        }
+    }
+    return 0;
+}
