@@ -61,7 +61,7 @@ struct Dinic
     int dfs(int x,int a)
     {
         if(x==t||a==0) return a;
-        int fw=0,f;
+        int flow=0,f;
         for(int &i=cur[x];i<mp[x].size();i++)//从上次考虑过的边开始
         {
             edge& e=edges[mp[x][i]];
@@ -69,25 +69,25 @@ struct Dinic
             {
                 e.flow+=f;
                 edges[mp[x][i]^1].flow-=f;
-                fw+=f;
+                flow+=f;
                 a-=f;
                 if(a==0) break;
             }
         }
-        return fw;
+        return flow;
     }
 
     int maxflow(int s,int t)
     {
         this->s=s;this->t=t;
-        int fw=0;
+        int flow=0;
 
         while(bfs())
         {
             memset(cur,0,sizeof(cur));
-            fw+=dfs(s,inf);
+            flow+=dfs(s,inf);
         }
 
-        return fw;
+        return flow;
     }
 };
