@@ -47,6 +47,7 @@ struct MCMF
         for(int i=1;i<=n;i++) d[i]=inf;
         d[s]=0;p[s]=0;a[s]=inf;op.push(s);
         memset(inq,0,sizeof(inq));
+        memset(cnt,0,sizeof(cnt));
         while(!op.empty())
         {
             int x=op.front();op.pop();
@@ -84,8 +85,19 @@ struct MCMF
 
     int mincost(int s,int t)
     {
-        int flow=0,cost=0;
-        while(spfa(s,t,flow,cost));
-        return cost;//也可得到流量，可以利用引用传值。
+        int flow=0,cost=0,ok=1,flag;
+        while((flag=spfa(s,t,flow,cost))>0)
+        {
+            if(flag==-1)
+            {
+                ok=0;
+                break;
+            }
+        }
+        if(!ok) 
+        {
+            //有负环
+        }
+        else return cost;//也可得到流量，可以利用引用传值。
     }
 };
