@@ -40,7 +40,7 @@ struct Dinic
     {
         memset(vis,0,sizeof(vis));
         op.push(s);d[s]=0;vis[s]=1;
-        while(op.empty())
+        while(!op.empty())
         {   
             int x=op.front();op.pop();
             for(int i=0;i<mp[x].size();i++)
