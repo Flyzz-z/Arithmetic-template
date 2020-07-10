@@ -68,7 +68,6 @@ void KM()
         {
             memset(S,0,sizeof(S));
             memset(T,0,sizeof(T));
-            memset(lft,0,sizeof(lft));
             if(match(i)) break;
             else  update();
         }
