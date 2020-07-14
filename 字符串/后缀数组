@@ -1,0 +1,77 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int maxn=1000+5;
+const int sigma_size=125;
+char s[maxn];
+int sa[maxn],t1[maxn],t2[maxn],rnk[maxn],height[maxn],C[maxn];//C最多离散化出小于maxn个数
+struct suf_array
+{
+    int n;
+    void get_sa(char* s,int m)
+    {
+        memset(C,0,sizeof(C));
+        int len=strlen(s),*x=t1,*y=t2;//x装名次，y装下标。
+        this->n=len;
+        for(int i=0;i<len;i++) C[x[i]=s[i]]++;
+        for(int i=1;i<m;i++) C[i]+=C[i-1];
+        for(int i=len-1;i>=0;i--)  sa[--C[x[i]]]=i;
+        for(int k=1;k<=len;k<<=1)
+        {
+            int p=0;
+            for(int i=len-k;i<len;i++) y[p++]=i;//若要求长度长的优先，与下一行交换位置
+            for(int i=0;i<len;i++) if(sa[i]>=k) y[p++]=sa[i]-k;
+
+            for(int i=0;i<m;i++) C[i]=0;//注意每个字符都小于m
+            for(int i=0;i<len;i++) C[x[y[i]]]++;
+            for(int i=0;i<m;i++) C[i]+=C[i-1];
+            for(int i=len-1;i>=0;i--) sa[--C[x[y[i]]]]=y[i];
+        
+            p=1; swap(x,y);
+            x[sa[0]]=1;
+            for(int i=0;i<len;i++)
+            {
+                x[sa[i]]=y[sa[i-1]]==y[sa[i]]&&y[sa[i-1]+k]==y[sa[i]+k]?p-1:p++;
+            }
+            if(p>=len) break;
+            m=p;
+        }
+        memcpy(rnk,x,sizeof(rnk));
+    }
+
+    int cmp_suffix(char* pattern,int p,int m)//m为模板串长度
+    {
+        return strncmp(pattern,s+sa[p],m);
+    }
+
+    int find(char* P)
+    {
+        int m=strlen(P);
+        if(cmp_suffix(P,0,m)<0) return -1;
+        if(cmp_suffix(P,n-1,m)>0) return -1;
+        int l=0,r=n-1;
+        while(r>=l)
+        {
+            int mid=l+(r-l)/2;
+            int res=cmp_suffix(P,mid,m);
+            if(!res) return mid;
+            if(res<0) r=mid-1;
+            else l=mid+1; 
+        }
+
+        return -1;
+    }
+
+    void getheighgt()
+    {
+        int i,j,k=0;
+        for(int i=0;i<n;i++) rnk[sa[i]]=i;
+        for(int i=0;i<n;i++)
+        {
+            if(k) k--;
+            int j=sa[rnk[i]-1];
+            while(s[i+k]==s[j+k]) k++;
+            height[rnk[i]]=k;
+        }
+    }
+}；
