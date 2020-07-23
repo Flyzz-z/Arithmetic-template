@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int maxn=2e3+5;
+const int mod=998244353;
+ll x[maxn],y[maxn];
+void exgcd(ll a,ll b,ll& x,ll& y)
+{
+    if(!b)
+    {
+        x=1,y=0;
+    }
+    else
+    {
+        exgcd(b,a%b,y,x);
+        y-=x*(a/b);
+    }
+}
+ll solve(int n,int k)
+{
+    ll ans=0;
+    for(int i=1;i<=n;i++)
+    {
+        ll tmp1=y[i],tmp2=1;
+        for(int j=1;j<=n;j++)
+        {
+            if(i==j) continue;
+            else
+            {
+                tmp1=tmp1*(k-x[j])%mod;
+                tmp1=(tmp1+mod)%mod;
+                tmp2*=(x[i]-x[j])%mod;
+                tmp2=(tmp2%mod+mod)%mod;
+            }
+        }
+        ll nx,ny;
+        exgcd(tmp2,mod,nx,ny);
+        ans+=tmp1*(nx%mod+mod)%mod;
+        ans%=mod;
+    }
+    return ans;
+}
+int main()
+{
+    freopen("in.txt","r",stdin);
+    int n,k;scanf("%d%d",&n,&k);
+    for(int i=1;i<=n;i++) scanf("%lld%lld",&x[i],&y[i]);
+    ll ans=solve(n,k);
+    printf("%lld\n",ans);
+    return 0;
+}
